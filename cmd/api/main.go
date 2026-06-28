@@ -1,15 +1,4 @@
-package recipe
+package main
 
-import (
-	"time"
-)
-
-type Recipe struct {
-	Id          uint
-	UserId      uint
-	Title       string
-	ImageUrl    string
-	Description string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+func main() {
 }
