@@ -1,1 +1,1 @@
-# kitchen_log_api
+# kitchen-log-api

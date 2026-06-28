@@ -1,0 +1,89 @@
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
+    username TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW ()
+);
+
+CREATE TABLE recipes (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    image_url TEXT,
+    description TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW ()
+);
+
+CREATE TABLE ingredients (
+    id BIGSERIAL PRIMARY KEY,
+    recipe_id BIGINT NOT NULL REFERENCES recipes (id) ON DELETE CASCADE,
+    user_id BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    amount NUMERIC(10, 2) NOT NULL,
+    measurement_unit TEXT NOT NULL,
+    order_index BIGINT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW ()
+);
+
+CREATE TABLE steps (
+    id BIGSERIAL PRIMARY KEY,
+    recipe_id BIGINT NOT NULL REFERENCES recipes (id) ON DELETE CASCADE,
+    user_id BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    text TEXT NOT NULL,
+    order_index BIGINT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW ()
+);
+
+CREATE TABLE tags (
+    id BIGSERIAL PRIMARY KEY,
+    recipe_id BIGINT NOT NULL REFERENCES recipes (id) ON DELETE CASCADE,
+    user_id BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW ()
+);
+
+CREATE TABLE set_meals (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    description TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW ()
+);
+
+CREATE TABLE set_meal_recipes (
+    id BIGSERIAL PRIMARY KEY,
+    set_meal_id BIGINT NOT NULL REFERENCES set_meals (id) ON DELETE CASCADE,
+    recipe_id BIGINT NOT NULL REFERENCES recipes (id) ON DELETE CASCADE,
+    user_id BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    UNIQUE (set_meal_id, recipe_id)
+);
+
+CREATE TABLE calendar (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    recipe_id BIGINT NOT NULL REFERENCES recipes (id),
+    start DATE NOT NULL,
+    color TEXT NOT NULL DEFAULT 'BLUE' CHECK (color IN ('BLUE', 'RED', 'GREEN', 'YELLOW')),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW ()
+);
+
+CREATE TABLE shopping_list (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    amount NUMERIC(10, 2) NOT NULL,
+    measurement_unit TEXT NOT NULL,
+    status BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW (),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW ()
+);

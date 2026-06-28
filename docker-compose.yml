@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: kitchen-log-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/01_create_table.sql
+      - ./sql/seed.sql:/docker-entrypoint-initdb.d/02_seed.sql
